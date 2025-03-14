@@ -9,6 +9,12 @@ class Notificationscreen extends StatefulWidget {
 }
 
 class _NotificationscreenState extends State<Notificationscreen> {
+  List<String> Messagelist = [
+    "Your appointment with dr.jimmy is secheduled for March 29 at 10:00 am",
+    "Your appointment with dr.jimmy is secheduled for March 10 at 12:00 am",
+    "Your appointment with dr.jimmy is secheduled for may 29 at 02:00 am",
+    "Your appointment with dr.jimmy is secheduled for june 29 at 10:00 am",
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +40,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                 SizedBox(height: 20),
                 Column(
                   children: List.generate(
-                    10,
+                    Messagelist.length,
                     (index) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: InkWell(
@@ -46,7 +52,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                             color: ColorConstants.maincolor,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               children: [
                                 Padding(
@@ -68,7 +74,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                                       Padding(
                                         padding: EdgeInsets.only(right: 5),
                                         child: Text(
-                                          "Your appointment with dr.jimmy is secheduled for March 29 at 10:00 am",
+                                          Messagelist[index],
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),

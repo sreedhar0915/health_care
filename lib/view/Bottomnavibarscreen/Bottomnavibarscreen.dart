@@ -31,12 +31,13 @@ class _BottomnavibarscreenState extends State<Bottomnavibarscreen> {
 
   BottomNavigationBar _bottomNavigationBar() {
     return BottomNavigationBar(
-      onTap: (value) {
+      onTap: (int index) {
         setState(() {
-          selecttab = value;
+          selecttab = index;
         });
       },
       selectedItemColor: ColorConstants.maincolor,
+      currentIndex: selecttab,
       unselectedItemColor: ColorConstants.black,
       type: BottomNavigationBarType.fixed,
       items: [

@@ -78,7 +78,7 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                                     color: ColorConstants.red, width: 1)),
                           ),
                           validator: (value) {
-                            if (Namecontroller.text.length < 2) {
+                            if (Namecontroller.text.length > 2) {
                               return "enter valid name";
                             } else if (value!.isEmpty) {
                               return "enter password";
@@ -185,8 +185,13 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                                     onPressed: () async {
                                       var selecteddate = await showDatePicker(
                                           context: context,
-                                          firstDate: DateTime.now(),
-                                          lastDate: DateTime(2028));
+                                          firstDate: DateTime(2000),
+                                          lastDate: DateTime(2026));
+                                      // print(selecteddate.toString());
+
+                                      // var formdate =
+                                      //     DateFormat("dd MMM yyyy").format(selecteddate!);
+                                      // DOBcontroller.text = formdate;
                                     },
                                     icon: Icon(Icons.calendar_month)),
                               ),

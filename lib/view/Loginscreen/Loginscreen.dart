@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_care/main.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Bottomnavibarscreen/Bottomnavibarscreen.dart';
+import 'package:health_care/view/Forgetpasswordscreen/Forgetpasswordscreen.dart';
 import 'package:health_care/view/Registrationscreen/Registrationscreen.dart';
 
 class Loginscreen extends StatefulWidget {
@@ -151,7 +152,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          Registrationscreen(),
+                                          Forgetpasswordscreen(),
                                     ));
                               },
                               child: Text(

@@ -13,9 +13,16 @@ class PersonInformationCard extends StatelessWidget {
         height: 50,
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: ColorConstants.black),
-        ),
+            color: ColorConstants.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: ColorConstants.black),
+            boxShadow: const [
+              BoxShadow(
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  color: ColorConstants.grey,
+                  offset: Offset(0, 3))
+            ]),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(

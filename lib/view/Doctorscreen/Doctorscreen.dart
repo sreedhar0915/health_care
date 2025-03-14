@@ -1,9 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 
-class Doctorscreen extends StatelessWidget {
-  const Doctorscreen({super.key});
+class Doctorscreen extends StatefulWidget {
+  final String Drname;
+  final String speciality;
+  final String Drimage;
+  const Doctorscreen({
+    super.key,
+    required this.Drname,
+    required this.speciality,
+    required this.Drimage,
+  });
 
+  @override
+  State<Doctorscreen> createState() => _DoctorscreenState();
+}
+
+class _DoctorscreenState extends State<Doctorscreen> {
+  final List<String> visitHours = [
+    '11:00 AM',
+    '12:00 PM',
+    '01:00 PM',
+    '02:00 PM',
+  ];
+  String? selectedHour;
+  final List<Map<String, dynamic>> categorylist = [
+    {
+      "icon": Icons.person_add_alt_rounded,
+      "count": "150+",
+      "category": "patients"
+    },
+    {"icon": Icons.calendar_month, "count": "3+", "category": "Years"},
+    {"icon": Icons.star, "count": "4.8", "category": "Rating"},
+    {"icon": Icons.message, "count": "90+", "category": "reviews"},
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +53,7 @@ class Doctorscreen extends StatelessWidget {
                       color: ColorConstants.maincolor,
                       borderRadius: BorderRadius.circular(15)),
                   child: Image.asset(
-                    "Assets/Images/Dr.Jimmy.jpg",
+                    widget.Drimage,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -47,7 +77,7 @@ class Doctorscreen extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Dr.Jimmy Jose",
+                    widget.Drname,
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
                   Spacer(),
@@ -61,11 +91,11 @@ class Doctorscreen extends StatelessWidget {
                   Text("(524 views)"),
                 ],
               ),
-              Text("pulmonologist"),
+              Text(widget.speciality),
               SizedBox(height: 10),
               Row(
                   children: List.generate(
-                4,
+                categorylist.length,
                 (index) => Padding(
                   padding: const EdgeInsets.all(5),
                   child: InkWell(
@@ -78,14 +108,11 @@ class Doctorscreen extends StatelessWidget {
                         child: Center(
                             child: Column(
                           children: [
-                            Icon(Icons.person_add_alt_sharp),
+                            Icon(categorylist[index]["icon"]),
                             SizedBox(height: 5),
-                            Text(
-                              "200+",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            Text(categorylist[index]["count"]),
                             SizedBox(height: 5),
-                            Text("Patients"),
+                            Text(categorylist[index]["category"]),
                           ],
                         )),
                       ),
@@ -102,7 +129,7 @@ class Doctorscreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: Text(
-                  "Dr. Jimmy Jose is a highly qualified medical professional with an MBBS degree and a postgraduate degree in MD. He has several years of experience working in the medical field and is currently serving as the Chief Physician in a hospital or healthcare organization.",
+                  "He is a highly qualified medical professional with an MBBS degree and a postgraduate degree in MD. He has several years of experience working in the medical field and is currently serving as the Chief Physician in a hospital or healthcare organization.",
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -115,28 +142,29 @@ class Doctorscreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Row(
-                  children: List.generate(
-                3,
-                (index) => Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: 50,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFADDAEB),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: ColorConstants.black)),
+              SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: visitHours.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedHour = visitHours[index];
+                        });
+                      },
                       child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Center(child: Text("12:00 am")),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        child: _timeSlot(
+                          visitHours[index],
+                          visitHours[index] == selectedHour,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-              )),
+              ),
               SizedBox(height: 10),
               InkWell(
                 onTap: () {
@@ -174,6 +202,23 @@ class Doctorscreen extends StatelessWidget {
       backgroundColor: ColorConstants.white,
       surfaceTintColor: ColorConstants.white,
       title: Center(child: Image.asset("Assets/Images/title.jpg")),
+    );
+  }
+
+  Widget _timeSlot(String time, bool isSelected) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+        color: isSelected ? ColorConstants.Buttoncolor : Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        time,
+        style: TextStyle(
+          fontSize: 14,
+          color: isSelected ? Colors.white : Colors.black,
+        ),
+      ),
     );
   }
 }

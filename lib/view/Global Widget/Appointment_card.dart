@@ -13,9 +13,16 @@ class AppointmentCard extends StatelessWidget {
       width: 200,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: ColorConstants.black),
-      ),
+          color: ColorConstants.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: ColorConstants.black),
+          boxShadow: const [
+            BoxShadow(
+                spreadRadius: 2,
+                blurRadius: 5,
+                color: ColorConstants.grey,
+                offset: Offset(0, 3))
+          ]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

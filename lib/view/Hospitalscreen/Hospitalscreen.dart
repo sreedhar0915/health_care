@@ -4,14 +4,48 @@ import 'package:health_care/utilis/Snackbar.dart';
 import 'package:health_care/view/Doctorscreen/Doctorscreen.dart';
 import 'package:health_care/view/Global%20Widget/Doctor_card.dart';
 
-class Hospitalscreen extends StatefulWidget {
-  const Hospitalscreen({super.key});
+class Hospitalscreen extends StatelessWidget {
+  final String name;
+  final String speciality;
+  final String location;
+  Hospitalscreen({
+    super.key,
+    required this.name,
+    required this.speciality,
+    required this.location,
+  });
 
-  @override
-  State<Hospitalscreen> createState() => _HospitalscreenState();
-}
+  List<String> Facilitieslist = [
+    "Emergency care",
+    "ICU",
+    "Cardiology",
+    "Surgery",
+    "Neurology",
+  ];
 
-class _HospitalscreenState extends State<Hospitalscreen> {
+  final List<Map<String, dynamic>> Doctorlist = [
+    {
+      "name": "Dr.Jimmy",
+      "speciality": "Pulmonologist",
+      "time": "12:00 am to 02:00 pm"
+    },
+    {
+      "name": "Dr.Ishak",
+      "speciality": "Dermatology",
+      "time": "09:00 am to 01:00 pm"
+    },
+    {
+      "name": "Dr.John",
+      "speciality": "Cardiologist",
+      "time": "11:00 am to 03:00 pm"
+    },
+    {
+      "name": "Dr.willam",
+      "speciality": "Ophthalmologist",
+      "time": "08:00 am to 12:00 pm"
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,16 +85,16 @@ class _HospitalscreenState extends State<Hospitalscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Rajagiri Hospital",
+                    name,
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
-                  Text("Multi Speciality Hospital"),
+                  Text(speciality),
                   SizedBox(height: 10),
                   Row(
                     children: [
                       Icon(Icons.location_on_outlined),
                       SizedBox(width: 5),
-                      Text("Chunangamvely, Aluva, Ernkulam, kerala"),
+                      Text(location),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -83,50 +117,36 @@ class _HospitalscreenState extends State<Hospitalscreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  Row(
-                      children: List.generate(
-                    3,
-                    (index) => Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 50,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFADDAEB),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: ColorConstants.black)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Center(child: Text("Emergency care")),
+                  SizedBox(
+                    height: 60,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      scrollDirection: Axis.horizontal,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 20),
+                      itemCount: Facilitieslist.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFADDAEB),
+                                borderRadius: BorderRadius.circular(20),
+                                border:
+                                    Border.all(color: ColorConstants.black)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Center(child: Text(Facilitieslist[index])),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  )),
-                  Row(
-                      children: List.generate(
-                    3,
-                    (index) => Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 50,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFADDAEB),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: ColorConstants.black)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Center(child: Text("Emergency care")),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )),
+                  ),
                   SizedBox(height: 10),
                   Text(
                     "About",
@@ -158,16 +178,25 @@ class _HospitalscreenState extends State<Hospitalscreen> {
                       scrollDirection: Axis.horizontal,
                       separatorBuilder: (context, index) =>
                           const SizedBox(width: 20),
-                      itemCount: 5,
+                      itemCount: Doctorlist.length,
                       itemBuilder: (context, index) => InkWell(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Doctorscreen(),
+                                  builder: (context) => Doctorscreen(
+                                    Drimage: "Assets/Images/Dr.Jimmy.jpg",
+                                    speciality: Doctorlist[index]["speciality"],
+                                    Drname: Doctorlist[index]["name"],
+                                  ),
                                 ));
                           },
-                          child: DoctorCard()),
+                          child: DoctorCard(
+                            Drimage: "Assets/Images/Dr.Jimmy.jpg",
+                            speciality: Doctorlist[index]["speciality"],
+                            time: Doctorlist[index]["time"],
+                            Drname: Doctorlist[index]["name"],
+                          )),
                     ),
                   ),
                   SizedBox(height: 10),
