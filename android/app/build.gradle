@@ -6,8 +6,9 @@ plugins {
 }
 
 android {
-    namespace = "com.example.health_care"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.example.health_care"  // Set your application's namespace
+    compileSdk = flutter.compileSdkVersion  // Uses Flutter's compileSdkVersion setting
+
     ndkVersion = '25.1.8937393'
 
     compileOptions {
@@ -20,25 +21,25 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // Your unique application ID (ensure this matches with what you configured in your Flutter project)
         applicationId = "com.example.health_care"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        // Minimum SDK version should be >=21 for Flutter applications
+        minSdk = flutter.minSdkVersion // You can explicitly set a value, e.g., minSdk = 21
+        targetSdk = flutter.targetSdkVersion // Or you can hardcode a value like 33
+        versionCode = flutter.versionCode // Version code
+        versionName = flutter.versionName // Version name
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            // Add signing configuration for your release build
+            signingConfig = signingConfigs.debug // For now, it uses the debug signing config (you'll need to modify this for production)
         }
     }
+
+    // You can add other configurations here (for example, flavor dimensions, product flavors, etc.)
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Defines the location of the Flutter source (it’s set to the root folder of your Flutter project)
 }

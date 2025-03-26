@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:health_care/controller/Profilescreen_controller.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:health_care/controller/Registration_controller.dart';
+import 'package:health_care/controller/loginscreen_controller.dart';
+
 import 'package:health_care/view/Splashscreen/Splashscreen.dart';
 import 'package:provider/provider.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await ProfilescreenController.initDb();
+void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
-      create: (context) => ProfilescreenController(),
+      create: (context) => RegistrationController(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => LoginScreenController(),
     ),
   ], child: Myapp()));
 }
@@ -19,6 +23,8 @@ class Myapp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [FlutterSmartDialog.observer],
+      builder: FlutterSmartDialog.init(),
       debugShowCheckedModeBanner: false,
       home: Splashscreen(),
     );

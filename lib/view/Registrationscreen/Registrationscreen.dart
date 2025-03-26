@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:health_care/controller/Registration_controller.dart';
+import 'package:health_care/controller/loginscreen_controller.dart';
 import 'package:health_care/main.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Loginscreen/Loginscreen.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Registrationscreen extends StatefulWidget {
   const Registrationscreen({super.key});
@@ -21,6 +25,7 @@ class _RegistrationscreenState extends State<Registrationscreen> {
 
   dynamic? gender;
   bool ispasswoedvisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +60,7 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                           ),
                         ),
                         child: TextFormField(
+                          controller: Namecontroller,
                           decoration: InputDecoration(
                             labelText: "Enter Name",
                             hintText: "Name",
@@ -78,7 +84,7 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                                     color: ColorConstants.red, width: 1)),
                           ),
                           validator: (value) {
-                            if (Namecontroller.text.length > 2) {
+                            if (Namecontroller.text.length <= 2) {
                               return "enter valid name";
                             } else if (value!.isEmpty) {
                               return "enter password";
@@ -187,21 +193,21 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                                           context: context,
                                           firstDate: DateTime(2000),
                                           lastDate: DateTime(2026));
-                                      // print(selecteddate.toString());
+                                      print(selecteddate.toString());
 
-                                      // var formdate =
-                                      //     DateFormat("dd MMM yyyy").format(selecteddate!);
-                                      // DOBcontroller.text = formdate;
+                                      var formdate = DateFormat("yyyy MM DD")
+                                          .format(selecteddate!);
+                                      DOBcontroller.text = formdate;
                                     },
                                     icon: Icon(Icons.calendar_month)),
                               ),
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return "enter Date Of Birth";
-                              //   } else {
-                              //     return null;
-                              //   }
-                              // },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "enter Date Of Birth";
+                                } else {
+                                  return null;
+                                }
+                              },
                             ),
                           ),
                           DropdownButton(
@@ -388,18 +394,37 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                 ),
                 SizedBox(height: 30),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (_formKey.currentState!.validate()) {
-                      Email = emailcontroller.text;
-                      password = Passwordcontroller.text;
-                      name = Namecontroller.text;
-                      phoneno = Phonenumbercontroller.text;
-                      DOB = DOBcontroller.text;
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Loginscreen(),
-                          ));
+                      bool? status =
+                          await context.read<RegistrationController>().Register(
+                                email: emailcontroller.text,
+                                Name: Namecontroller.text,
+                                passWord: Passwordcontroller.text,
+                                phone: Phonenumbercontroller.text,
+                                // Dob: DOBcontroller.text,
+                              );
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      if (status == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            "Registration Successfull",
+                          ),
+                          backgroundColor: Colors.green,
+                        ));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Loginscreen(),
+                            ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            "Registration failed",
+                          ),
+                          backgroundColor: Colors.red,
+                        ));
+                      }
                     }
                   },
                   child: Container(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 
 class HospitalCard extends StatelessWidget {
+  final String image;
   final String name;
   final String speciality;
   final String location;
@@ -9,6 +10,7 @@ class HospitalCard extends StatelessWidget {
       {required this.name,
       required this.speciality,
       required this.location,
+      required this.image,
       super.key});
 
   @override
@@ -34,8 +36,7 @@ class HospitalCard extends StatelessWidget {
               Container(
                 height: 100,
                 width: 100,
-                child: Image.asset("Assets/Images/rajagiri.jpg",
-                    fit: BoxFit.fitHeight),
+                child: Image.asset(image, fit: BoxFit.fitHeight),
               ),
               SizedBox(width: 5),
               Expanded(

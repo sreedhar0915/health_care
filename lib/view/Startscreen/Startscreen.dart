@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:health_care/main.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Loginscreen/Loginscreen.dart';
 import 'package:health_care/view/Registrationscreen/Registrationscreen.dart';

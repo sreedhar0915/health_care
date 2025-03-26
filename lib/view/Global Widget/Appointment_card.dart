@@ -9,7 +9,7 @@ class AppointmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
+      height: 125,
       width: 200,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(

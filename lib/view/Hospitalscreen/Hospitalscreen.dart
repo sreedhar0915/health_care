@@ -5,6 +5,7 @@ import 'package:health_care/view/Doctorscreen/Doctorscreen.dart';
 import 'package:health_care/view/Global%20Widget/Doctor_card.dart';
 
 class Hospitalscreen extends StatelessWidget {
+  final String image;
   final String name;
   final String speciality;
   final String location;
@@ -13,6 +14,7 @@ class Hospitalscreen extends StatelessWidget {
     required this.name,
     required this.speciality,
     required this.location,
+    required this.image,
   });
 
   List<String> Facilitieslist = [
@@ -58,7 +60,7 @@ class Hospitalscreen extends StatelessWidget {
                 height: 250,
                 width: double.infinity,
                 child: Image.asset(
-                  "Assets/Images/rajagiri.jpg",
+                  image,
                   fit: BoxFit.cover,
                 ),
               ),

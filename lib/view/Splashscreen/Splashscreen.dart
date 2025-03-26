@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_care/view/Specialitydetail_screen/Specialitydetail_screen.dart';
 import 'package:health_care/view/Startscreen/Startscreen.dart';
 
 class Splashscreen extends StatefulWidget {

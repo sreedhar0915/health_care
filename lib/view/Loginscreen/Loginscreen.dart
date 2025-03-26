@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:health_care/controller/loginscreen_controller.dart';
 import 'package:health_care/main.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Bottomnavibarscreen/Bottomnavibarscreen.dart';
 import 'package:health_care/view/Forgetpasswordscreen/Forgetpasswordscreen.dart';
 import 'package:health_care/view/Registrationscreen/Registrationscreen.dart';
+import 'package:provider/provider.dart';
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
@@ -29,9 +31,6 @@ class _LoginscreenState extends State<Loginscreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
                 Text(
                   "LOGIN",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -77,13 +76,21 @@ class _LoginscreenState extends State<Loginscreen> {
                                     color: ColorConstants.red, width: 1)),
                           ),
                           validator: (value) {
-                            if (value != Email) {
-                              return "wrong email address";
-                            } else if (value!.isEmpty) {
-                              return "enter email address";
-                            } else {
-                              return null;
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your email";
                             }
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                .hasMatch(value)) {
+                              return "Please enter a valid email address";
+                            }
+                            return null;
+                            // if (value != Email) {
+                            //   return "wrong email address";
+                            // } else if (value!.isEmpty) {
+                            //   return "enter email address";
+                            // } else {
+                            //   return null;
+                            // }
                           },
                         ),
                       ),
@@ -125,13 +132,20 @@ class _LoginscreenState extends State<Loginscreen> {
                                     color: ColorConstants.red, width: 1)),
                           ),
                           validator: (value) {
-                            if (value != password) {
-                              return "Wrong password";
-                            } else if (value!.isEmpty) {
-                              return "enter password";
-                            } else {
-                              return null;
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your password";
                             }
+                            if (value.length < 5) {
+                              return "Password must s at least 5 characters";
+                            }
+                            return null;
+                            // if (value != password) {
+                            //   return "Wrong password";
+                            // } else if (value!.isEmpty) {
+                            //   return "enter password";
+                            // } else {
+                            //   return null;
+                            // }
                           },
                         ),
                       ),
@@ -166,15 +180,33 @@ class _LoginscreenState extends State<Loginscreen> {
                 ),
                 SizedBox(height: 30),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (_formKey.currentState!.validate()) {
-                      Email = emailcontroller.text;
-                      password = Passwordcontroller.text;
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Bottomnavibarscreen()),
-                      );
+                      bool? s = await context
+                          .read<LoginScreenController>()
+                          .login(
+                              email: emailcontroller.text,
+                              password: Passwordcontroller.text);
+                      if (s == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Login successful"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Bottomnavibarscreen(),
+                            ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Login failed"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     }
                   },
                   child: Container(
