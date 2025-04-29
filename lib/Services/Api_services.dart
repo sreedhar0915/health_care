@@ -1,14 +1,21 @@
 import 'dart:convert';
 
+import 'package:health_care/Model/Doctor_model/Data.dart';
+import 'package:health_care/Model/Doctor_model/Doctors.dart';
 import 'package:health_care/Model/hospital_model/Data.dart';
-
 import 'package:health_care/Model/hospital_model/hospital.dart';
+import 'package:health_care/Model/loginscreenmodal/loginrespomodel.dart';
+import 'package:health_care/Services/Api_envirnoment.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.1.53:8000";
+  // Select the environment (Change this to prod for production)
+  static final ApiEnvironment currentEnv = ApiEnvironment.dev;
+
+  // Use the selected environment's base URL
+  static final String baseUrl = currentEnv.baseUrl;
   // token sharedpreference
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -58,7 +65,7 @@ class ApiServices {
 
 //---------on login-----------
 
-  Future<bool?> onLogin(String email, String password) async {
+  Future<LoginResModel?> onLogin(String email, String password) async {
     final url = Uri.parse("$baseUrl/login/");
     var headers = {
       "Accept": "application/json",
@@ -81,18 +88,19 @@ class ApiServices {
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
+        LoginResModel res = LoginResModel.fromJson(jsonResponse);
+        return res;
+        // if (jsonResponse['access'] != null &&
+        //     jsonResponse['access'].isNotEmpty) {
+        //   String accessToken = jsonResponse['access'];
+        //   String refreshToken = jsonResponse['refresh'] ?? "";
 
-        if (jsonResponse['access'] != null &&
-            jsonResponse['access'].isNotEmpty) {
-          String accessToken = jsonResponse['access'];
-          String refreshToken = jsonResponse['refresh'] ?? "";
+        //   final prefs = await SharedPreferences.getInstance();
+        //   await prefs.setString('access', accessToken);
+        //   await prefs.setString('refresh', refreshToken);
 
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('access', accessToken);
-          await prefs.setString('refresh', refreshToken);
-
-          return true;
-        }
+        //   return true;
+        // }
       } else {
         print("Login failed: ${response.body}");
       }
@@ -101,31 +109,42 @@ class ApiServices {
     } finally {
       SmartDialog.dismiss();
     }
-    return false;
+    // return false;
   }
 
   //----------On doctorfetching-------------
-  Future<bool?> fetchDoctors() async {
+
+  Future<List<Doctor>?> fetchDoctors() async {
     final url = Uri.parse("$baseUrl/doctors-all/");
+    String? accessToken = await getToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      throw Exception("User is not authenticated. Access token is missing.");
+    }
+
     var headers = {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
+      "accept": "application/json",
+      "Authorization": "Bearer $accessToken",
     };
+
     try {
-      SmartDialog.showLoading();
-
-      print("Fetching doctors... Headers: $headers");
-
+      print("Fetching doctors from: $url");
       final response = await http.get(url, headers: headers);
 
-      print("API Response Code: ${response.statusCode}");
-      print("API Response Body: ${response.body}");
+      print("Response Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
-      return response.statusCode >= 200 && response.statusCode <= 299;
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        var jsonData = json.decode(response.body);
+        var res = GetAllDoctors.fromJson(
+            jsonData); // Use GetAllDoctors to parse the response
+        return res.data; // Return the list of doctors
+      } else {
+        throw Exception("Invalid response format: 'data' key missing or null");
+      }
     } catch (e) {
-      SmartDialog.dismiss();
-      print("API Error: $e");
-      return false;
+      print("Error fetching doctors: $e");
+      throw Exception("Error fetching doctors: $e");
     }
   }
 
@@ -145,7 +164,7 @@ class ApiServices {
     };
 
     try {
-      print("Fetching trips from: $url");
+      print("Fetching hospital from: $url");
       final response = await http.get(url, headers: headers);
 
       print("Response Code: ${response.statusCode}");
@@ -162,6 +181,33 @@ class ApiServices {
     } catch (e) {
       print("Error fetching hospital: $e");
       throw Exception("Error fetching hospital: $e");
+    }
+  }
+
+  //------------On Notificationfetching-----------
+
+  Future<void> FetchNotification() async {
+    final url = Uri.parse("$baseUrl/notification/");
+    String? accessToken = await getToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      throw Exception("User is not authenticated. Access token is missing.");
+    }
+    try {
+      print("Fetching Notification from: $url");
+      final response = await http.get(url);
+
+      print("Response Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        var jsonData = json.decode(response.body);
+      } else {
+        throw Exception("Invalid response format: 'data' key missing or null");
+      }
+    } catch (e) {
+      print("Error fetching Notification: $e");
+      throw Exception("Error fetching Notification: $e");
     }
   }
 }

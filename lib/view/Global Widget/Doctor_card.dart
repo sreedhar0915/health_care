@@ -6,11 +6,13 @@ class DoctorCard extends StatelessWidget {
   final String speciality;
   final String time;
   final String Drimage;
+  final String rating;
   const DoctorCard(
       {required this.Drname,
       required this.speciality,
       required this.time,
       required this.Drimage,
+      required this.rating,
       super.key});
 
   @override
@@ -37,7 +39,7 @@ class DoctorCard extends StatelessWidget {
                 Container(
                   height: 100,
                   width: 100,
-                  child: Image.asset("$Drimage", fit: BoxFit.fitHeight),
+                  child: Image.network("$Drimage", fit: BoxFit.fitHeight),
                 ),
                 const SizedBox(width: 5),
                 Padding(
@@ -67,7 +69,7 @@ class DoctorCard extends StatelessWidget {
           )),
       Positioned(
         bottom: 10,
-        right: 5,
+        right: 10,
         child: Container(
           height: 40,
           width: 120,
@@ -84,7 +86,7 @@ class DoctorCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(Icons.star, color: ColorConstants.Yellow),
-            Text("4.8")
+            Text("$rating/5")
           ],
         ),
       )

@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:health_care/Services/Api_envirnoment.dart';
+import 'package:health_care/controller/Homescreen_controller.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Doctorscreen/Doctorscreen.dart';
 import 'package:health_care/view/Global%20Widget/Appointment_card.dart';
@@ -8,6 +10,7 @@ import 'package:health_care/view/Global%20Widget/Doctorspeciality_card.dart';
 import 'package:health_care/view/Global%20Widget/Hospital_card.dart';
 import 'package:health_care/view/Hospitalscreen/Hospitalscreen.dart';
 import 'package:health_care/view/Specialitydetail_screen/Specialitydetail_screen.dart';
+import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -129,126 +132,199 @@ An ophthalmologist diagnoses and treats all eye diseases, performs eye surgery, 
     },
   ];
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
+      await Provider.of<Homescreencontroller>(context, listen: false)
+          .getHospital();
+      await Provider.of<Homescreencontroller>(context, listen: false)
+          .getDoctor();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ColorConstants.white,
         appBar: Appbarsection(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                Textfieldsection(),
-                SizedBox(height: 20),
-                Carouselslidersection(),
-                const SizedBox(height: 10),
-                Appointmentsection(),
-                SizedBox(height: 10),
-                Specialitysection(),
-                SizedBox(height: 10),
-                Doctorsection(),
-                SizedBox(height: 10),
-                Hospitalsection(),
-              ],
+        body: Consumer<Homescreencontroller>(
+          builder: (context, value, child) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Textfieldsection(),
+                  SizedBox(height: 20),
+                  Carouselslidersection(),
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text("Todays Appointment",
+                              style: TextStyle(
+                                  color: ColorConstants.headingcolor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold)),
+                          Spacer(),
+                          Text("See All"),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 130,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: (context, index) => SizedBox(
+                            width: 20,
+                          ),
+                          itemCount: value.Doctorlist!.length,
+                          itemBuilder: (context, index) => AppointmentCard(
+                            doctor: value.Doctorlist![index].name ?? "",
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Specialitysection(),
+                  SizedBox(height: 10),
+                  Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Text("Popular Doctor",
+                              style: TextStyle(
+                                  color: ColorConstants.headingcolor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold)),
+                          Spacer(),
+                          Text("See All"),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 150,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 20),
+                          itemCount: value.Doctorlist!.length,
+                          itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Doctorscreen(
+                                        about: value.Doctorlist![index].about ??
+                                            "",
+                                        rating: value.Doctorlist![index].rating
+                                            .toString(),
+                                        Drimage: value
+                                                    .Doctorlist![index].image !=
+                                                null
+                                            ? "${ApiEnvironment.dev.baseUrl}/${value.Doctorlist![index].image}"
+                                            : "https://images.pexels.com/photos/17795207/pexels-photo-17795207/free-photo-of-turtle-on-a-tropical-reef.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                                        speciality: value.Doctorlist![index]
+                                                .department ??
+                                            "",
+                                        Drname:
+                                            value.Doctorlist![index].name ?? "",
+                                      ),
+                                    ));
+                              },
+                              child: DoctorCard(
+                                rating:
+                                    value.Doctorlist![index].rating.toString(),
+                                Drimage: value.Doctorlist![index].image != null
+                                    ? "${ApiEnvironment.dev.baseUrl}/${value.Doctorlist![index].image}"
+                                    : "https://images.pexels.com/photos/17795207/pexels-photo-17795207/free-photo-of-turtle-on-a-tropical-reef.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                                speciality:
+                                    value.Doctorlist![index].department ?? "",
+                                time: Doctorlist[index]["time"],
+                                Drname: value.Doctorlist![index].name ?? "",
+                              )),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Text("Popular Hospitals",
+                              style: TextStyle(
+                                  color: ColorConstants.headingcolor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold)),
+                          Spacer(),
+                          Text("See All"),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 150,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 20),
+                          itemCount: value.Hospitallist!.length,
+                          itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Hospitalscreen(
+                                        image: value.Hospitallist![index]
+                                                    .image !=
+                                                null
+                                            ? "${ApiEnvironment.dev.baseUrl}/${value.Hospitallist![index].image}"
+                                            : "https://images.pexels.com/photos/17795207/pexels-photo-17795207/free-photo-of-turtle-on-a-tropical-reef.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                                        name: value.Hospitallist![index].name ??
+                                            "no data",
+                                        speciality: Hospitallist[index]
+                                            ["speciality"],
+                                        location: value.Hospitallist![index]
+                                                .location ??
+                                            "no data",
+                                        about:
+                                            value.Hospitallist![index].about ??
+                                                "no data",
+                                        rating: value
+                                            .Hospitallist![index].rating
+                                            .toString(),
+                                      ),
+                                    ));
+                              },
+                              child: HospitalCard(
+                                image: value.Hospitallist![index].image != null
+                                    ? "${ApiEnvironment.dev.baseUrl}/${value.Hospitallist![index].image}"
+                                    : "https://images.pexels.com/photos/17795207/pexels-photo-17795207/free-photo-of-turtle-on-a-tropical-reef.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                                name: value.Hospitallist![index].name ??
+                                    "no data",
+                                speciality: Hospitallist[index]["speciality"],
+                                location: value.Hospitallist![index].location ??
+                                    "no data",
+                                rating: value.Hospitallist![index].rating
+                                    .toString(),
+                              )),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ));
-  }
-
-  Column Hospitalsection() {
-    return Column(
-      children: [
-        const Row(
-          children: [
-            Text("Popular Hospitals",
-                style: TextStyle(
-                    color: ColorConstants.headingcolor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Spacer(),
-            Text("See All"),
-          ],
-        ),
-        SizedBox(height: 10),
-        SizedBox(
-          height: 150,
-          child: ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 20),
-            itemCount: Hospitallist.length,
-            itemBuilder: (context, index) => InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Hospitalscreen(
-                          image: Hospitallist[index]["image"],
-                          name: Hospitallist[index]["name"],
-                          speciality: Hospitallist[index]["speciality"],
-                          location: Hospitallist[index]["location"],
-                        ),
-                      ));
-                },
-                child: HospitalCard(
-                  image: Hospitallist[index]["image"],
-                  name: Hospitallist[index]["name"],
-                  speciality: Hospitallist[index]["speciality"],
-                  location: Hospitallist[index]["location"],
-                )),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Column Doctorsection() {
-    return Column(
-      children: [
-        const Row(
-          children: [
-            Text("Popular Doctor",
-                style: TextStyle(
-                    color: ColorConstants.headingcolor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Spacer(),
-            Text("See All"),
-          ],
-        ),
-        SizedBox(height: 10),
-        SizedBox(
-          height: 150,
-          child: ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 20),
-            itemCount: Doctorlist.length,
-            itemBuilder: (context, index) => InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Doctorscreen(
-                          Drimage: Doctorlist[index]["image"],
-                          speciality: Doctorlist[index]["speciality"],
-                          Drname: Doctorlist[index]["name"],
-                        ),
-                      ));
-                },
-                child: DoctorCard(
-                  Drimage: Doctorlist[index]["image"],
-                  speciality: Doctorlist[index]["speciality"],
-                  time: Doctorlist[index]["time"],
-                  Drname: Doctorlist[index]["name"],
-                )),
-          ),
-        ),
-      ],
-    );
   }
 
   Column Specialitysection() {
@@ -298,40 +374,6 @@ An ophthalmologist diagnoses and treats all eye diseases, performs eye surgery, 
                         speciality:
                             Doctorspecialitylist[index]["Name"].toString()),
                   )),
-        ),
-      ],
-    );
-  }
-
-  Column Appointmentsection() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text("Todays Appointment",
-                style: TextStyle(
-                    color: ColorConstants.headingcolor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Spacer(),
-            Text("See All"),
-          ],
-        ),
-        SizedBox(height: 10),
-        SizedBox(
-          height: 130,
-          child: ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => SizedBox(
-              width: 20,
-            ),
-            itemCount: Doctorlist.length,
-            itemBuilder: (context, index) => AppointmentCard(
-              doctor: Doctorlist[index]["name"].toString(),
-            ),
-          ),
         ),
       ],
     );

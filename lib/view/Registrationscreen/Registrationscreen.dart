@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:health_care/controller/Registration_controller.dart';
-import 'package:health_care/controller/loginscreen_controller.dart';
-import 'package:health_care/main.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Loginscreen/Loginscreen.dart';
 import 'package:intl/intl.dart';
@@ -195,7 +193,7 @@ class _RegistrationscreenState extends State<Registrationscreen> {
                                           lastDate: DateTime(2026));
                                       print(selecteddate.toString());
 
-                                      var formdate = DateFormat("yyyy MM DD")
+                                      var formdate = DateFormat("dd MM yyyy")
                                           .format(selecteddate!);
                                       DOBcontroller.text = formdate;
                                     },

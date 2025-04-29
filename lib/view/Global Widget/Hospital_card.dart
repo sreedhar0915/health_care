@@ -6,11 +6,13 @@ class HospitalCard extends StatelessWidget {
   final String name;
   final String speciality;
   final String location;
+  final String rating;
   const HospitalCard(
       {required this.name,
       required this.speciality,
       required this.location,
       required this.image,
+      required this.rating,
       super.key});
 
   @override
@@ -36,7 +38,7 @@ class HospitalCard extends StatelessWidget {
               Container(
                 height: 100,
                 width: 100,
-                child: Image.asset(image, fit: BoxFit.fitHeight),
+                child: Image.network(image, fit: BoxFit.fitHeight),
               ),
               SizedBox(width: 5),
               Expanded(
@@ -51,17 +53,31 @@ class HospitalCard extends StatelessWidget {
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(speciality),
-                      SizedBox(height: 30),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Row(children: [
+                          Icon(Icons.location_on_outlined),
+                          Text(
+                            location,
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ]),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: Row(
                           children: [
-                            Icon(Icons.location_on_outlined),
-                            Text(
-                              location,
-                              style: TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.bold),
-                            )
+                            Icon(
+                              Icons.star,
+                              color: ColorConstants.Yellow,
+                            ),
+                            SizedBox(width: 5),
+                            Text("$rating/5",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            SizedBox(width: 2),
+                            Text("(524 views)"),
                           ],
                         ),
                       ),

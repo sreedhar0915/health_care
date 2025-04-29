@@ -5,11 +5,16 @@ class Doctorscreen extends StatefulWidget {
   final String Drname;
   final String speciality;
   final String Drimage;
+  final String rating;
+  final String about;
+
   const Doctorscreen({
     super.key,
     required this.Drname,
+    required this.about,
     required this.speciality,
     required this.Drimage,
+    required this.rating,
   });
 
   @override
@@ -52,7 +57,7 @@ class _DoctorscreenState extends State<Doctorscreen> {
                   decoration: BoxDecoration(
                       color: ColorConstants.maincolor,
                       borderRadius: BorderRadius.circular(15)),
-                  child: Image.asset(
+                  child: Image.network(
                     widget.Drimage,
                     fit: BoxFit.cover,
                   ),
@@ -86,7 +91,8 @@ class _DoctorscreenState extends State<Doctorscreen> {
                     color: ColorConstants.Yellow,
                   ),
                   SizedBox(width: 5),
-                  Text("4.8", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${widget.rating}/5",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(width: 2),
                   Text("(524 views)"),
                 ],
@@ -129,7 +135,7 @@ class _DoctorscreenState extends State<Doctorscreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: Text(
-                  "He is a highly qualified medical professional with an MBBS degree and a postgraduate degree in MD. He has several years of experience working in the medical field and is currently serving as the Chief Physician in a hospital or healthcare organization.",
+                  widget.about,
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

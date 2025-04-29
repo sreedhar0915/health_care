@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:health_care/controller/loginscreen_controller.dart';
-import 'package:health_care/main.dart';
+import 'package:health_care/Model/loginscreenmodal/loginrespomodel.dart';
+import 'package:health_care/Services/Userservices/Userservices.dart';
 import 'package:health_care/utilis/Color_Constant.dart';
 import 'package:health_care/view/Booking_screen/Booking_screen.dart';
 import 'package:health_care/view/Global%20Widget/Personinformationcard.dart';
@@ -13,7 +13,6 @@ import 'package:health_care/view/Reminder_screen/Reminder_screen.dart';
 import 'package:health_care/view/Sosscreen/Sosscreen.dart';
 import 'package:health_care/view/Startscreen/Startscreen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 class Profilescreen extends StatefulWidget {
   const Profilescreen({
@@ -25,6 +24,17 @@ class Profilescreen extends StatefulWidget {
 }
 
 class _ProfilescreenState extends State<Profilescreen> {
+  LoginResModel? user;
+  String name = "";
+  num? phone;
+  String email = "";
+
+  @override
+  void initState() {
+    super.initState();
+    updateUser();
+  }
+
   TextEditingController Namecontroller = TextEditingController();
   TextEditingController Phonenumbercontroller = TextEditingController();
   TextEditingController DOBcontroller = TextEditingController();
@@ -43,274 +53,259 @@ class _ProfilescreenState extends State<Profilescreen> {
 
   String? imagepath;
   Uint8List? imagebytes;
-  // @override
-  // void initState() {
-  //   WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
-  //     await LoginscreenController.initsharedpreferences();
-  //     setState(() {});
-  //   });
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.maincolor,
       appBar: Appbarsection(),
-      body: SingleChildScrollView(
-        child: Stack(children: [
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  SizedBox(height: 70),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: ColorConstants.white,
-                      border: Border.all(color: ColorConstants.black),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Name :",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                "$name",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text(
-                                "Phone Number :",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                "$phoneno",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text(
-                                "Date Of Birth :",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                "$DOB",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text(
-                                "Email ID :",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                "$Email",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.headingcolor),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+      body: Stack(children: [
+        Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                SizedBox(height: 70),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: ColorConstants.white,
+                    border: Border.all(color: ColorConstants.black),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  SizedBox(height: 10),
-                  InkWell(
-                    onTap: () async {
-                      // await value.updatprofile(
-                      //       value.ProfileList[index]["name"],
-                      //       value.ProfileList[index]["duedate"],
-                      //       value.ProfileList[index]["duetime"],
-                      //       value.ProfileList[index]["id"]);
-                      BOTTOMSHEET(context);
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 400,
-                      decoration: BoxDecoration(
-                          color: ColorConstants.maincolor,
-                          border: Border.all(color: ColorConstants.black),
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              bottomLeft: Radius.circular(15)),
-                          image: DecorationImage(
-                              image: AssetImage("Assets/Images/backgroud.jpg"),
-                              fit: BoxFit.cover)),
-                      child: Center(
-                          child: Text(
-                        "Update",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  PersonInformationCard(
-                      ontap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PrescriptionScreen(),
-                            ));
-                      },
-                      information: informations[0].toString()),
-                  PersonInformationCard(
-                      ontap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MedicineScreen(),
-                            ));
-                      },
-                      information: informations[1].toString()),
-                  PersonInformationCard(
-                      ontap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Sosscreen(),
-                            ));
-                      },
-                      information: informations[2].toString()),
-                  PersonInformationCard(
-                      ontap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookingScreen(),
-                            ));
-                      },
-                      information: informations[3].toString()),
-                  PersonInformationCard(
-                      ontap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReminderScreen(),
-                            ));
-                      },
-                      information: informations[4].toString()),
-                  SizedBox(height: 10),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Startscreen(),
-                          ));
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: ColorConstants.white,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: ColorConstants.red)),
-                      child: Center(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
                             Text(
-                              "Logout",
+                              "Name :",
                               style: TextStyle(
-                                  color: ColorConstants.red,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
                             ),
-                            Spacer(),
-                            Icon(
-                              Icons.exit_to_app_outlined,
-                              color: ColorConstants.red,
+                            SizedBox(width: 5),
+                            Text(
+                              "$name",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
                             )
                           ],
                         ),
-                      )),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              "Phone Number :",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              "$phone",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
+                            )
+                          ],
+                        ),
+                        // SizedBox(height: 10),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Date Of Birth :",
+                        //       style: TextStyle(
+                        //           fontSize: 20,
+                        //           fontWeight: FontWeight.bold,
+                        //           color: ColorConstants.headingcolor),
+                        //     ),
+                        //     SizedBox(width: 5),
+                        //     Text(
+                        //       "$DOB",
+                        //       style: TextStyle(
+                        //           fontSize: 15,
+                        //           fontWeight: FontWeight.bold,
+                        //           color: ColorConstants.headingcolor),
+                        //     )
+                        //   ],
+                        // ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              "Email ID :",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              "$email",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorConstants.headingcolor),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                InkWell(
+                  onTap: () async {
+                    BOTTOMSHEET(context);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 400,
+                    decoration: BoxDecoration(
+                        color: ColorConstants.maincolor,
+                        border: Border.all(color: ColorConstants.black),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            bottomLeft: Radius.circular(15)),
+                        image: DecorationImage(
+                            image: AssetImage("Assets/Images/backgroud.jpg"),
+                            fit: BoxFit.cover)),
+                    child: Center(
+                        child: Text(
+                      "Update",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                  ),
+                ),
+                SizedBox(height: 10),
+                PersonInformationCard(
+                    ontap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrescriptionScreen(),
+                          ));
+                    },
+                    information: informations[0].toString()),
+                PersonInformationCard(
+                    ontap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MedicineScreen(),
+                          ));
+                    },
+                    information: informations[1].toString()),
+                PersonInformationCard(
+                    ontap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Sosscreen(),
+                          ));
+                    },
+                    information: informations[2].toString()),
+                PersonInformationCard(
+                    ontap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingScreen(),
+                          ));
+                    },
+                    information: informations[3].toString()),
+                PersonInformationCard(
+                    ontap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReminderScreen(),
+                          ));
+                    },
+                    information: informations[4].toString()),
+                SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Startscreen(),
+                        ));
+                  },
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: ColorConstants.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: ColorConstants.red)),
+                    child: Center(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Logout",
+                            style: TextStyle(
+                                color: ColorConstants.red,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.exit_to_app_outlined,
+                            color: ColorConstants.red,
+                          )
+                        ],
+                      ),
+                    )),
+                  ),
+                )
+              ],
             ),
           ),
-          Positioned(
-            top: 20,
-            right: 70,
-            child: InkWell(
-              onTap: () async {
-                final ImagePicker picker = ImagePicker();
-                final XFile? image =
-                    await picker.pickImage(source: ImageSource.gallery);
-                if (image != null) {
-                  setState(() {
-                    imagepath = image.path;
-                  });
-                }
-              },
-              child: Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: ColorConstants.black,
-                      border: Border.all(color: ColorConstants.black),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: imagepath != null
-                      ? Image.file(
-                          File(imagepath!),
-                          fit: BoxFit.cover,
-                        )
-                      : Image.asset(
-                          "Assets/Images/profile.jpg",
-                          fit: BoxFit.cover,
-                        )),
-            ),
+        ),
+        Positioned(
+          top: 20,
+          right: 40,
+          child: InkWell(
+            onTap: () async {
+              final ImagePicker picker = ImagePicker();
+              final XFile? image =
+                  await picker.pickImage(source: ImageSource.gallery);
+              if (image != null) {
+                setState(() {
+                  imagepath = image.path;
+                });
+              }
+            },
+            child: Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    color: ColorConstants.black,
+                    border: Border.all(color: ColorConstants.black),
+                    borderRadius: BorderRadius.circular(20)),
+                child: imagepath != null
+                    ? Image.file(
+                        File(imagepath!),
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        "Assets/Images/profile.jpg",
+                        fit: BoxFit.cover,
+                      )),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 
@@ -526,7 +521,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         name = Namecontroller.text;
-                        phoneno = Phonenumbercontroller.text;
+                        //phone = Phonenumbercontroller.text.toString();
                         // DOB = DOBcontroller.text;
                       }
                       Navigator.pop(context);
@@ -596,5 +591,19 @@ class _ProfilescreenState extends State<Profilescreen> {
       surfaceTintColor: ColorConstants.white,
       title: Center(child: Image.asset("Assets/Images/title.jpg")),
     );
+  }
+
+  Future<void> updateUser() async {
+    user = await UserService.getUser();
+    if (user != null) {
+      print("Fetched User: ${user!.name}, ${user!.phone}, ${user!.email}");
+      setState(() {
+        name = user!.name!;
+        phone = user!.phone;
+        email = user!.email!;
+      });
+    } else {
+      print("No user found"); // Debug print
+    }
   }
 }
